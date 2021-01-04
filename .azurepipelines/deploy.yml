@@ -1,14 +1,14 @@
-trigger: none
-#   branches:
-#     include:
-#       - main
-#   paths:
-#     include:
-#       - '.azurepipelines/*'
-#       - 'deployment/*'
-#       - 'function_app/*'
-#     exclude:
-#       - 'readme.md'
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - '.azurepipelines/*'
+      - 'deployment/*'
+      - 'function_app/*'
+    exclude:
+      - 'readme.md'
 
 pool:
   vmImage: 'ubuntu-20.04'
