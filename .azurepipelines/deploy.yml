@@ -1,0 +1,85 @@
+trigger: none
+#   branches:
+#     include:
+#       - main
+#   paths:
+#     include:
+#       - '.azurepipelines/*'
+#       - 'deployment/*'
+#       - 'function_app/*'
+#     exclude:
+#       - 'readme.md'
+
+pool:
+  vmImage: 'ubuntu-20.04'
+
+stages:
+- stage: Build
+  jobs:
+  - job: Function_App_Build
+    steps:
+    - task: ArchiveFiles@2
+      displayName: create zip archive for function app deployment
+      inputs:
+        rootFolderOrFile: '$(Build.Repository.LocalPath)/function_app'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/function.zip'
+        replaceExistingArchive: true
+    - task: PublishBuildArtifacts@1
+      displayName: publish build artifact
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/function.zip'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+- stage: Deploy
+  dependsOn:
+    Build
+  variables:
+  - group: function
+  jobs:
+  - job: Infrastructure_Deployment
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: Deploy Azure Resouces - ARM Deployment
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'Azure CBU Sponsorship'
+        subscriptionId: '$(subscription_id)'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: '$(resouce_group)'
+        location: '$(location)'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Build.Repository.LocalPath)/deployment/azuredeploy.json'
+        overrideParameters: '-teams_webhook_url $(teams_webhook_url) -function_app_name $(function_app_name) -storage_account_type $(storage_account_type) -function_runtime $(function_runtime) -storage_account_name $(storage_account_name) -app_insights_name $(app_insights_name) -hosting_plan_name $(hosting_plan_name)'
+        deploymentMode: 'Incremental'
+        deploymentOutputs: 'arm_deployment_output'
+    - task: PowerShell@2
+      displayName: show function app url name
+      inputs:
+        targetType: 'inline'
+        script: |
+          $arm_deployment_output = ConvertFrom-Json '$(arm_deployment_output)'
+          Write-Output $arm_deployment_output
+        errorActionPreference: 'continue'
+        pwsh: true
+    
+  - job: Function_Deployment
+    dependsOn:
+      Infrastructure_Deployment
+    steps:
+      - task: DownloadBuildArtifacts@0
+        displayName: download build artifact
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'drop'
+          downloadPath: '$(System.ArtifactsDirectory)/zip'
+      - task: AzureFunctionApp@1
+        displayName: deploy function app code
+        inputs:
+          azureSubscription: 'Azure CBU Sponsorship'
+          appType: 'functionApp'
+          appName: $(function_app_name)
+          package: '$(System.ArtifactsDirectory)/zip/drop/function.zip'
+          deploymentMethod: 'auto'
