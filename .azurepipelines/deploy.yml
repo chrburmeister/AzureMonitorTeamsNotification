@@ -44,7 +44,7 @@ stages:
       displayName: Deploy Azure Resouces - ARM Deployment
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'Azure CBU Sponsorship'
+        azureResourceManagerConnection: 'Microsoft Azure GuimaForDev - Dev'
         subscriptionId: '$(subscription_id)'
         action: 'Create Or Update Resource Group'
         resourceGroupName: '$(resouce_group)'
@@ -78,7 +78,7 @@ stages:
       - task: AzureFunctionApp@1
         displayName: deploy function app code
         inputs:
-          azureSubscription: 'Azure CBU Sponsorship'
+          azureSubscription: 'Microsoft Azure GuimaForDev - Dev'
           appType: 'functionApp'
           appName: $(function_app_name)
           package: '$(System.ArtifactsDirectory)/zip/drop/function.zip'
