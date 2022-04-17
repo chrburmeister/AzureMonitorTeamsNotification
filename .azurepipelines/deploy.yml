@@ -51,7 +51,7 @@ stages:
         location: '$(location)'
         templateLocation: 'Linked artifact'
         csmFile: '$(Build.Repository.LocalPath)/deployment/azuredeploy.json'
-        overrideParameters: '-teams_webhook_url $(teams_webhook_url) -function_app_name $(function_app_name) -storage_account_type $(storage_account_type) -function_runtime $(function_runtime) -storage_account_name $(storage_account_name) -app_insights_name $(app_insights_name) -hosting_plan_name $(hosting_plan_name)'
+        overrideParameters: '-teams_webhook_url $(teams_webhook_url) -function_app_name $(function_app_name) -storage_account_type $(storage_account_type) -function_runtime $(function_runtime) -storage_account_name $(storage_account_name)  -hosting_plan_name $(hosting_plan_name)'
         deploymentMode: 'Incremental'
         deploymentOutputs: 'arm_deployment_output'
     - task: PowerShell@2
