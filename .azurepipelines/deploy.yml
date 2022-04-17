@@ -44,7 +44,7 @@ stages:
       displayName: Deploy Azure Resouces - ARM Deployment
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'Microsoft Azure GuimaForDev - Dev'
+        azureResourceManagerConnection: 'Githubpersonal'
         subscriptionId: '$(subscription_id)'
         action: 'Create Or Update Resource Group'
         resourceGroupName: '$(resouce_group)'
