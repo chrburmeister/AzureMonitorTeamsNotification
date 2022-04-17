@@ -44,14 +44,14 @@ stages:
       displayName: Deploy Azure Resouces - ARM Deployment
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'Azure CBU Sponsorship'
+        azureResourceManagerConnection: 'MonitorAlertsActionGroups'
         subscriptionId: '$(subscription_id)'
         action: 'Create Or Update Resource Group'
         resourceGroupName: '$(resouce_group)'
         location: '$(location)'
         templateLocation: 'Linked artifact'
         csmFile: '$(Build.Repository.LocalPath)/deployment/azuredeploy.json'
-        overrideParameters: '-teams_webhook_url $(teams_webhook_url) -function_app_name $(function_app_name) -storage_account_type $(storage_account_type) -function_runtime $(function_runtime) -storage_account_name $(storage_account_name) -app_insights_name $(app_insights_name) -hosting_plan_name $(hosting_plan_name)'
+        overrideParameters: '-teams_webhook_url $(teams_webhook_url) -function_app_name $(function_app_name) -storage_account_type $(storage_account_type) -function_runtime $(function_runtime) -app_insights_name $(app_insights_name) -storage_account_name $(storage_account_name)  -hosting_plan_name $(hosting_plan_name)'
         deploymentMode: 'Incremental'
         deploymentOutputs: 'arm_deployment_output'
     - task: PowerShell@2
@@ -78,7 +78,7 @@ stages:
       - task: AzureFunctionApp@1
         displayName: deploy function app code
         inputs:
-          azureSubscription: 'Azure CBU Sponsorship'
+          azureSubscription: 'MonitorAlertsActionGroups'
           appType: 'functionApp'
           appName: $(function_app_name)
           package: '$(System.ArtifactsDirectory)/zip/drop/function.zip'
