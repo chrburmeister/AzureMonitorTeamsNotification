@@ -44,7 +44,7 @@ stages:
       displayName: Deploy Azure Resouces - ARM Deployment
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'Githubpersonal'
+        azureResourceManagerConnection: 'AzureDev'
         subscriptionId: '$(subscription_id)'
         action: 'Create Or Update Resource Group'
         resourceGroupName: '$(resouce_group)'
@@ -78,7 +78,7 @@ stages:
       - task: AzureFunctionApp@1
         displayName: deploy function app code
         inputs:
-          azureSubscription: 'Githubpersonal'
+          azureSubscription: 'AzureDev'
           appType: 'functionApp'
           appName: $(function_app_name)
           package: '$(System.ArtifactsDirectory)/zip/drop/function.zip'
