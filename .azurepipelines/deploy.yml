@@ -78,7 +78,7 @@ stages:
       - task: AzureFunctionApp@1
         displayName: deploy function app code
         inputs:
-          azureSubscription: 'Microsoft Azure GuimaForDev - Dev'
+          azureSubscription: 'Githubpersonal'
           appType: 'functionApp'
           appName: $(function_app_name)
           package: '$(System.ArtifactsDirectory)/zip/drop/function.zip'
